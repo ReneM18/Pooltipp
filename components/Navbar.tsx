@@ -1,10 +1,10 @@
-interface NavbarProps {
-  displayName: string;
-  freeStars: number;
-  points: number;
-}
+"use client";
 
-export default function Navbar({ displayName, freeStars, points }: NavbarProps) {
+import { useUser } from "@/lib/UserContext";
+
+export default function Navbar() {
+  const { displayName, freeStars, points } = useUser();
+
   return (
     <header className="sticky top-0 z-10 border-b border-edge bg-pitch/95 backdrop-blur">
       <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-4">
