@@ -1,10 +1,22 @@
+export type Sport = "Fußball" | "NFL" | "NBA";
+
+export const SPORTS: Sport[] = ["Fußball", "NFL", "NBA"];
+
+export interface Team {
+  id: string;
+  name: string;
+  sport: Sport;
+  countryCode: string; // ISO 3166-1 alpha-2, z. B. "DE", "US"
+}
+
 export interface Match {
   id: string;
-  competition: string;
-  matchday: number;
+  sport: Sport;
+  competition: string; // z. B. "Bundesliga", "NFL", "NBA"
+  matchday?: number;
   kickoff: string; // ISO 8601 timestamp
-  homeTeam: string;
-  awayTeam: string;
+  homeTeamId: string;
+  awayTeamId: string;
 }
 
 export interface Tip {

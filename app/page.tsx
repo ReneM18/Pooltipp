@@ -1,15 +1,12 @@
 "use client";
 
 import MatchCard from "@/components/MatchCard";
-import { mockMatches } from "@/lib/mockData";
 import { useUser } from "@/lib/UserContext";
+import { useAppData } from "@/lib/AppDataContext";
 
 export default function DashboardPage() {
   const { freeStars, spendStars } = useUser();
-
-  function handleSubmitTip({ stake }: { stake: number }) {
-    spendStars(stake);
-  }
+  const { matches, getTeam } = useAppData();
 
   return (
     <main className="mx-auto max-w-3xl px-5 py-8">
@@ -23,14 +20,22 @@ export default function DashboardPage() {
       </div>
 
       <div className="flex flex-col gap-4">
-        {mockMatches.map((match) => (
-          <MatchCard
-            key={match.id}
-            match={match}
-            maxStake={Math.min(100, freeStars)}
-            onSubmitTip={handleSubmitTip}
-          />
-        ))}
+        {matches.map((match) => {
+          const homeTeam = getTeam(match.homeTeamId);
+          const awayTeam = getTeam(match.awayTeamId);
+          if (!homeTeam || !awayTeam) return null;
+
+          return (
+            <MatchCard
+              key={match.id}
+              match={match}
+              homeTeam={homeTeam}
+              awayTeam={awayTeam}
+              maxStake={Math.min(100, freeStars)}
+              onSubmitTip={spendStars}
+            />
+          );
+        })}
       </div>
     </main>
   );

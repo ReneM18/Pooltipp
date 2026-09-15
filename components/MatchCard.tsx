@@ -1,20 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { Match } from "@/lib/types";
+import { Match, Team } from "@/lib/types";
+import { flagEmoji } from "@/lib/flags";
+
+const sportIcon: Record<string, string> = {
+  "Fußball": "⚽",
+  NFL: "🏈",
+  NBA: "🏀",
+};
 
 interface MatchCardProps {
   match: Match;
+  homeTeam: Team;
+  awayTeam: Team;
   maxStake: number;
-  onSubmitTip: (params: {
-    matchId: string;
-    homeScore: number;
-    awayScore: number;
-    stake: number;
-  }) => void;
+  onSubmitTip: (stake: number) => void;
 }
 
-export default function MatchCard({ match, maxStake, onSubmitTip }: MatchCardProps) {
+export default function MatchCard({
+  match,
+  homeTeam,
+  awayTeam,
+  maxStake,
+  onSubmitTip,
+}: MatchCardProps) {
   const [homeScore, setHomeScore] = useState<number>(0);
   const [awayScore, setAwayScore] = useState<number>(0);
   const [stake, setStake] = useState<number>(Math.min(20, maxStake));
@@ -29,7 +39,7 @@ export default function MatchCard({ match, maxStake, onSubmitTip }: MatchCardPro
   });
 
   function handleSubmit() {
-    onSubmitTip({ matchId: match.id, homeScore, awayScore, stake });
+    onSubmitTip(stake);
     setSubmitted(true);
   }
 
@@ -37,15 +47,16 @@ export default function MatchCard({ match, maxStake, onSubmitTip }: MatchCardPro
     <div className="rounded-card border border-edge bg-surface p-5">
       <div className="mb-4 flex items-center justify-between text-sm text-muted">
         <span>
-          {match.competition} · Spieltag {match.matchday}
+          {sportIcon[match.sport] ?? ""} {match.competition}
+          {match.matchday ? ` · Spieltag ${match.matchday}` : ""}
         </span>
         <span>{kickoffLabel}</span>
       </div>
 
       <div className="mb-5 flex items-center justify-center gap-4">
-        <TeamLabel name={match.homeTeam} align="right" />
+        <TeamLabel team={homeTeam} align="right" />
         <span className="font-display text-sm text-muted">vs</span>
-        <TeamLabel name={match.awayTeam} align="left" />
+        <TeamLabel team={awayTeam} align="left" />
       </div>
 
       <div className="mb-5 flex items-center justify-center gap-3">
@@ -53,14 +64,14 @@ export default function MatchCard({ match, maxStake, onSubmitTip }: MatchCardPro
           value={homeScore}
           onChange={setHomeScore}
           disabled={submitted}
-          label={`Tor-Ergebnis ${match.homeTeam}`}
+          label={`Tor-Ergebnis ${homeTeam.name}`}
         />
         <span className="font-display text-xl text-muted">:</span>
         <ScoreInput
           value={awayScore}
           onChange={setAwayScore}
           disabled={submitted}
-          label={`Tor-Ergebnis ${match.awayTeam}`}
+          label={`Tor-Ergebnis ${awayTeam.name}`}
         />
       </div>
 
@@ -90,7 +101,7 @@ export default function MatchCard({ match, maxStake, onSubmitTip }: MatchCardPro
       <button
         onClick={handleSubmit}
         disabled={submitted}
-        className="w-full rounded-full bg-action py-2.5 font-display font-semibold tracking-wide text-base text-base transition-colors enabled:hover:bg-action-hover disabled:cursor-not-allowed disabled:bg-edge disabled:text-muted"
+        className="w-full rounded-full bg-action py-2.5 font-display font-semibold tracking-wide text-base text-pitch transition-colors enabled:hover:bg-action-hover disabled:cursor-not-allowed disabled:bg-edge disabled:text-muted"
       >
         {submitted ? "Tipp abgegeben" : "Tipp abgeben"}
       </button>
@@ -98,14 +109,15 @@ export default function MatchCard({ match, maxStake, onSubmitTip }: MatchCardPro
   );
 }
 
-function TeamLabel({ name, align }: { name: string; align: "left" | "right" }) {
+function TeamLabel({ team, align }: { team: Team; align: "left" | "right" }) {
   return (
     <span
-      className={`font-display text-lg font-semibold text-ink ${
-        align === "right" ? "text-right" : "text-left"
+      className={`flex items-center gap-2 font-display text-lg font-semibold text-ink ${
+        align === "right" ? "flex-row-reverse text-right" : "text-left"
       }`}
     >
-      {name}
+      <span>{flagEmoji(team.countryCode)}</span>
+      <span>{team.name}</span>
     </span>
   );
 }
