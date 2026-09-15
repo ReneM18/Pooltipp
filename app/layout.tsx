@@ -4,6 +4,7 @@ import "./globals.css";
 import { UserProvider } from "@/lib/UserContext";
 import { AppDataProvider } from "@/lib/AppDataContext";
 import Navbar from "@/components/Navbar";
+import NewsTicker from "@/components/NewsTicker";
 import NavTabs from "@/components/NavTabs";
 
 const rajdhani = Rajdhani({
@@ -34,6 +35,7 @@ export default function RootLayout({
         <AppDataProvider>
           <UserProvider>
             <Navbar />
+            <NewsTicker />
             <NavTabs />
             {children}
           </UserProvider>
