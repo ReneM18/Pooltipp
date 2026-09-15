@@ -4,6 +4,7 @@ import { useState, FormEvent } from "react";
 import { useAppData } from "@/lib/AppDataContext";
 import { Sport, SPORTS } from "@/lib/types";
 import { COUNTRIES, flagEmoji } from "@/lib/flags";
+import TeamBadge from "@/components/TeamBadge";
 
 // Einfacher Zugriffsschutz fürs MVP – KEINE echte Sicherheit.
 // Sobald der richtige Login (Firebase Auth) steht, ersetzt der diese PIN
@@ -79,11 +80,13 @@ function TeamManager() {
   const [name, setName] = useState("");
   const [sport, setSport] = useState<Sport>("Fußball");
   const [countryCode, setCountryCode] = useState(COUNTRIES[0].code);
+  const [primaryColor, setPrimaryColor] = useState("#3FA66B");
+  const [secondaryColor, setSecondaryColor] = useState("#FFFFFF");
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
-    addTeam({ name: name.trim(), sport, countryCode });
+    addTeam({ name: name.trim(), sport, countryCode, primaryColor, secondaryColor });
     setName("");
   }
 
@@ -93,51 +96,84 @@ function TeamManager() {
 
       <form
         onSubmit={handleSubmit}
-        className="mb-4 flex flex-col gap-3 rounded-card border border-edge bg-surface p-4 sm:flex-row sm:items-end"
+        className="mb-4 flex flex-col gap-3 rounded-card border border-edge bg-surface p-4"
       >
-        <div className="flex-1">
-          <label className="mb-1 block text-xs text-muted">Teamname</label>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="z. B. Kansas City Chiefs"
-            className="w-full rounded-lg border border-edge bg-pitch px-3 py-2 text-sm text-ink outline-none focus:border-gold"
-          />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+          <div className="flex-1">
+            <label className="mb-1 block text-xs text-muted">Teamname</label>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="z. B. Kansas City Chiefs"
+              className="w-full rounded-lg border border-edge bg-pitch px-3 py-2 text-sm text-ink outline-none focus:border-gold"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs text-muted">Sportart</label>
+            <select
+              value={sport}
+              onChange={(e) => setSport(e.target.value as Sport)}
+              className="w-full rounded-lg border border-edge bg-pitch px-3 py-2 text-sm text-ink outline-none focus:border-gold"
+            >
+              {SPORTS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs text-muted">Land</label>
+            <select
+              value={countryCode}
+              onChange={(e) => setCountryCode(e.target.value)}
+              className="w-full rounded-lg border border-edge bg-pitch px-3 py-2 text-sm text-ink outline-none focus:border-gold"
+            >
+              {COUNTRIES.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {flagEmoji(c.code)} {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div>
-          <label className="mb-1 block text-xs text-muted">Sportart</label>
-          <select
-            value={sport}
-            onChange={(e) => setSport(e.target.value as Sport)}
-            className="w-full rounded-lg border border-edge bg-pitch px-3 py-2 text-sm text-ink outline-none focus:border-gold"
+
+        <div className="flex flex-wrap items-end gap-4">
+          <div>
+            <label className="mb-1 block text-xs text-muted">
+              {sport === "NFL" ? "Helmfarbe" : "Trikotfarbe"}
+            </label>
+            <input
+              type="color"
+              value={primaryColor}
+              onChange={(e) => setPrimaryColor(e.target.value)}
+              className="h-9 w-14 cursor-pointer rounded-lg border border-edge bg-pitch p-1"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs text-muted">
+              {sport === "NFL" ? "Streifen-/Gitterfarbe" : "Kragen-/Saumfarbe"}
+            </label>
+            <input
+              type="color"
+              value={secondaryColor}
+              onChange={(e) => setSecondaryColor(e.target.value)}
+              className="h-9 w-14 cursor-pointer rounded-lg border border-edge bg-pitch p-1"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 rounded-lg border border-edge bg-pitch px-3 py-2">
+            <TeamBadge sport={sport} primaryColor={primaryColor} secondaryColor={secondaryColor} size={32} />
+            <span className="text-xs text-muted">Vorschau</span>
+          </div>
+
+          <button
+            type="submit"
+            className="ml-auto rounded-full bg-action px-5 py-2 font-display text-sm font-semibold text-pitch transition-colors hover:bg-action-hover"
           >
-            {SPORTS.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+            Team anlegen
+          </button>
         </div>
-        <div>
-          <label className="mb-1 block text-xs text-muted">Land</label>
-          <select
-            value={countryCode}
-            onChange={(e) => setCountryCode(e.target.value)}
-            className="w-full rounded-lg border border-edge bg-pitch px-3 py-2 text-sm text-ink outline-none focus:border-gold"
-          >
-            {COUNTRIES.map((c) => (
-              <option key={c.code} value={c.code}>
-                {flagEmoji(c.code)} {c.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button
-          type="submit"
-          className="rounded-full bg-action px-5 py-2 font-display text-sm font-semibold text-pitch transition-colors hover:bg-action-hover"
-        >
-          Team anlegen
-        </button>
       </form>
 
       <div className="overflow-hidden rounded-card border border-edge bg-surface">
@@ -151,7 +187,13 @@ function TeamManager() {
               index !== teams.length - 1 ? "border-b border-edge" : ""
             }`}
           >
-            <span className="flex items-center gap-2 text-sm text-ink">
+            <span className="flex items-center gap-3 text-sm text-ink">
+              <TeamBadge
+                sport={team.sport}
+                primaryColor={team.primaryColor}
+                secondaryColor={team.secondaryColor}
+                size={28}
+              />
               <span>{flagEmoji(team.countryCode)}</span>
               <span className="font-medium">{team.name}</span>
               <span className="text-xs text-muted">· {team.sport}</span>

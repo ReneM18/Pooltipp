@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Match, Team } from "@/lib/types";
 import { flagEmoji } from "@/lib/flags";
+import TeamBadge from "./TeamBadge";
 
 const sportIcon: Record<string, string> = {
   "Fußball": "⚽",
@@ -57,9 +58,15 @@ export default function MatchCard({
       </div>
 
       <div className="mb-5 flex items-center justify-center gap-4">
-        <TeamLabel name={homeTeam.name} align="right" />
+        <div className="flex flex-row-reverse items-center gap-2">
+          <TeamBadge sport={match.sport} primaryColor={homeTeam.primaryColor} secondaryColor={homeTeam.secondaryColor} size={30} />
+          <TeamLabel name={homeTeam.name} align="right" />
+        </div>
         <span className="font-display text-sm text-muted">vs</span>
-        <TeamLabel name={awayTeam.name} align="left" />
+        <div className="flex items-center gap-2">
+          <TeamBadge sport={match.sport} primaryColor={awayTeam.primaryColor} secondaryColor={awayTeam.secondaryColor} size={30} />
+          <TeamLabel name={awayTeam.name} align="left" />
+        </div>
       </div>
 
       <div className="mb-5 flex items-center justify-center gap-3">

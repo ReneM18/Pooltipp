@@ -7,6 +7,8 @@ export interface Team {
   name: string;
   sport: Sport;
   countryCode: string; // ISO 3166-1 alpha-2, z. B. "DE", "US"
+  primaryColor: string; // Hex, z. B. "#DC052D"
+  secondaryColor: string; // Hex, z. B. "#FFFFFF"
 }
 
 export interface Match {
