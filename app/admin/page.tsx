@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { useAppData } from "@/lib/AppDataContext";
-import { Sport, SPORTS } from "@/lib/types";
+import { Sport, SPORTS, JerseyStyle, JERSEY_STYLES } from "@/lib/types";
 import { COUNTRIES, flagEmoji } from "@/lib/flags";
 import TeamBadge from "@/components/TeamBadge";
 
@@ -82,11 +82,12 @@ function TeamManager() {
   const [countryCode, setCountryCode] = useState(COUNTRIES[0].code);
   const [primaryColor, setPrimaryColor] = useState("#3FA66B");
   const [secondaryColor, setSecondaryColor] = useState("#FFFFFF");
+  const [jerseyStyle, setJerseyStyle] = useState<JerseyStyle>("solid");
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
-    addTeam({ name: name.trim(), sport, countryCode, primaryColor, secondaryColor });
+    addTeam({ name: name.trim(), sport, countryCode, primaryColor, secondaryColor, jerseyStyle });
     setName("");
   }
 
@@ -163,9 +164,32 @@ function TeamManager() {
           </div>
 
           <div className="flex items-center gap-2 rounded-lg border border-edge bg-pitch px-3 py-2">
-            <TeamBadge sport={sport} primaryColor={primaryColor} secondaryColor={secondaryColor} size={32} />
+            <TeamBadge
+              sport={sport}
+              primaryColor={primaryColor}
+              secondaryColor={secondaryColor}
+              jerseyStyle={jerseyStyle}
+              size={32}
+            />
             <span className="text-xs text-muted">Vorschau</span>
           </div>
+
+          {sport !== "NFL" && (
+            <div>
+              <label className="mb-1 block text-xs text-muted">Trikot-Stil</label>
+              <select
+                value={jerseyStyle}
+                onChange={(e) => setJerseyStyle(e.target.value as JerseyStyle)}
+                className="w-full rounded-lg border border-edge bg-pitch px-3 py-2 text-sm text-ink outline-none focus:border-gold"
+              >
+                {JERSEY_STYLES.map((s) => (
+                  <option key={s.value} value={s.value}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <button
             type="submit"
@@ -192,6 +216,7 @@ function TeamManager() {
                 sport={team.sport}
                 primaryColor={team.primaryColor}
                 secondaryColor={team.secondaryColor}
+                jerseyStyle={team.jerseyStyle}
                 size={28}
               />
               <span>{flagEmoji(team.countryCode)}</span>

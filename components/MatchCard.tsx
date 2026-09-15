@@ -59,12 +59,24 @@ export default function MatchCard({
 
       <div className="mb-5 flex items-center justify-center gap-4">
         <div className="flex flex-row-reverse items-center gap-2">
-          <TeamBadge sport={match.sport} primaryColor={homeTeam.primaryColor} secondaryColor={homeTeam.secondaryColor} size={30} />
+          <TeamBadge
+            sport={match.sport}
+            primaryColor={homeTeam.primaryColor}
+            secondaryColor={homeTeam.secondaryColor}
+            jerseyStyle={homeTeam.jerseyStyle}
+            size={30}
+          />
           <TeamLabel name={homeTeam.name} align="right" />
         </div>
         <span className="font-display text-sm text-muted">vs</span>
         <div className="flex items-center gap-2">
-          <TeamBadge sport={match.sport} primaryColor={awayTeam.primaryColor} secondaryColor={awayTeam.secondaryColor} size={30} />
+          <TeamBadge
+            sport={match.sport}
+            primaryColor={awayTeam.primaryColor}
+            secondaryColor={awayTeam.secondaryColor}
+            jerseyStyle={awayTeam.jerseyStyle}
+            size={30}
+          />
           <TeamLabel name={awayTeam.name} align="left" />
         </div>
       </div>
