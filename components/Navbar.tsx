@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useUser } from "@/lib/UserContext";
 
 export default function Navbar() {
@@ -33,9 +34,12 @@ export default function Navbar() {
             </span>
           </div>
 
-          <div className="hidden h-8 w-8 items-center justify-center rounded-full bg-surface font-display text-sm font-semibold text-muted sm:flex">
+          <Link
+            href="/profil"
+            className="hidden h-8 w-8 items-center justify-center rounded-full bg-surface font-display text-sm font-semibold text-muted transition-colors hover:text-ink sm:flex"
+          >
             {displayName.slice(0, 1).toUpperCase()}
-          </div>
+          </Link>
         </div>
       </div>
     </header>

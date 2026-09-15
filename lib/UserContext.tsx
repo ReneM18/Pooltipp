@@ -5,16 +5,21 @@ import { mockUser } from "@/lib/mockData";
 
 interface UserContextValue {
   displayName: string;
+  setDisplayName: (name: string) => void;
   freeStars: number;
   points: number;
   spendStars: (amount: number) => boolean;
+  tipsSubmitted: number;
+  recordTipSubmitted: () => void;
 }
 
 const UserContext = createContext<UserContextValue | null>(null);
 
 export function UserProvider({ children }: { children: ReactNode }) {
+  const [displayName, setDisplayName] = useState(mockUser.displayName);
   const [freeStars, setFreeStars] = useState(mockUser.freeStars);
   const [points] = useState(mockUser.points);
+  const [tipsSubmitted, setTipsSubmitted] = useState(0);
 
   function spendStars(amount: number) {
     if (amount > freeStars) return false;
@@ -22,9 +27,21 @@ export function UserProvider({ children }: { children: ReactNode }) {
     return true;
   }
 
+  function recordTipSubmitted() {
+    setTipsSubmitted((current) => current + 1);
+  }
+
   return (
     <UserContext.Provider
-      value={{ displayName: mockUser.displayName, freeStars, points, spendStars }}
+      value={{
+        displayName,
+        setDisplayName,
+        freeStars,
+        points,
+        spendStars,
+        tipsSubmitted,
+        recordTipSubmitted,
+      }}
     >
       {children}
     </UserContext.Provider>

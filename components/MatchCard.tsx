@@ -46,17 +46,20 @@ export default function MatchCard({
   return (
     <div className="rounded-card border border-edge bg-surface p-5">
       <div className="mb-4 flex items-center justify-between text-sm text-muted">
-        <span>
-          {sportIcon[match.sport] ?? ""} {match.competition}
-          {match.matchday ? ` · Spieltag ${match.matchday}` : ""}
+        <span className="flex items-center gap-2">
+          <span>{flagEmoji(homeTeam.countryCode)}</span>
+          <span>
+            {sportIcon[match.sport] ?? ""} {match.competition}
+            {match.matchday ? ` · Spieltag ${match.matchday}` : ""}
+          </span>
         </span>
         <span>{kickoffLabel}</span>
       </div>
 
       <div className="mb-5 flex items-center justify-center gap-4">
-        <TeamLabel team={homeTeam} align="right" />
+        <TeamLabel name={homeTeam.name} align="right" />
         <span className="font-display text-sm text-muted">vs</span>
-        <TeamLabel team={awayTeam} align="left" />
+        <TeamLabel name={awayTeam.name} align="left" />
       </div>
 
       <div className="mb-5 flex items-center justify-center gap-3">
@@ -109,15 +112,14 @@ export default function MatchCard({
   );
 }
 
-function TeamLabel({ team, align }: { team: Team; align: "left" | "right" }) {
+function TeamLabel({ name, align }: { name: string; align: "left" | "right" }) {
   return (
     <span
-      className={`flex items-center gap-2 font-display text-lg font-semibold text-ink ${
-        align === "right" ? "flex-row-reverse text-right" : "text-left"
+      className={`font-display text-lg font-semibold text-ink ${
+        align === "right" ? "text-right" : "text-left"
       }`}
     >
-      <span>{flagEmoji(team.countryCode)}</span>
-      <span>{team.name}</span>
+      {name}
     </span>
   );
 }

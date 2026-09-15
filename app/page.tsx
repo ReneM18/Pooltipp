@@ -5,8 +5,13 @@ import { useUser } from "@/lib/UserContext";
 import { useAppData } from "@/lib/AppDataContext";
 
 export default function DashboardPage() {
-  const { freeStars, spendStars } = useUser();
+  const { freeStars, spendStars, recordTipSubmitted } = useUser();
   const { matches, getTeam } = useAppData();
+
+  function handleSubmitTip(stake: number) {
+    spendStars(stake);
+    recordTipSubmitted();
+  }
 
   return (
     <main className="mx-auto max-w-3xl px-5 py-8">
@@ -32,7 +37,7 @@ export default function DashboardPage() {
               homeTeam={homeTeam}
               awayTeam={awayTeam}
               maxStake={Math.min(100, freeStars)}
-              onSubmitTip={spendStars}
+              onSubmitTip={handleSubmitTip}
             />
           );
         })}
