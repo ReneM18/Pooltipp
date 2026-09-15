@@ -1,5 +1,8 @@
 # PoolTipp – MVP
 
+**Version: 3 (Trikots/Helme + Ticker) – falls du das hier auf GitHub siehst, ist der Upload angekommen ✅**
+
+
 ## Setup
 
 ```bash
